@@ -86,18 +86,20 @@ def optimize_seam(img_below, img_above, offset_x, offset_y, blend_width, stitch_
         dst_img[0:m1, 0:n1] = img_below
         # 可直接将img_above覆盖在dst_img的对应区域
         # 即：dst_img[offset_y:offset_y + m2, offset_x:offset_x + n2] = img_above
-        # 去除纵向衔接缝
         for i in range(offset_y, m2 + offset_y):
             for j in range(offset_x, n2 + offset_x):
                 alpha = 1
+                # 去除纵向衔接缝
                 if not (np.array_equal(dst_img[i, j], np.array([0, 0, 0])) or j >= offset_x + blend_width):
                     alpha = (j - offset_x) / blend_width
+                # 去除横向衔接缝（根据输入的图片选择是否需要去除横向裂缝）
                 # if not (np.array_equal(dst_img[i, j], np.array([0, 0, 0])) or i >= offset_y + blend_height):
                 #     alpha = (i - offset_y) / blend_height
                 # 图像融合 (Blend)
                 dst_img[i, j] = alpha * img_above[i - offset_y, j - offset_x] + (1 - alpha) * dst_img[i, j]
     else:
         # 融合宽度(★可调整·注意大小不能过大)
+        # 注：对于Right to Left，这里只进行了纵向缝隙的去除，可参考Left to Right自行实现
         blend_width = 100
         # 先放置above图像，发现衔接处融合效果会更好
         dst_img[0:m2, 0:n2] = img_above
@@ -151,16 +153,8 @@ def stitch_image_left_to_right(left, right):
     # 获取left和right的描述子
     kps1, des1 = extract_feature(left)
     kps2, des2 = extract_feature(right)
-    # cv2.drawKeypoints(left, kps1, left, (255, 0, 0))
-    # cv2.drawKeypoints(right, kps2, right, (255, 0, 0))
-    # cv2.imshow('left', left)
-    # cv2.imshow('right', right)
-    # cv2.waitKey()
     # 获取最优匹配
     matches = get_nice_matches(des1, des2)
-    # img_match = cv2.drawMatchesKnn(left, kps1, right, kps2, matches, None, flags=2)
-    # cv2.imshow('matched', img_match)
-    # cv2.waitKey()
     # 提取匹配点的位置坐标
     kps1_matched, kps2_matched = matches2points(kps1, kps2, matches)
     # 获取变换矩阵(★ 注意顺序！！！)
@@ -187,12 +181,6 @@ def stitch_image_left_to_right(left, right):
     stitched_size = (int(right_point[0]) + offset_x, int(right_point[1]) + offset_y)
     # 执行坐标变换，将left上的点投影到right的对应位置
     left_transformed = cv2.warpPerspective(left, matrix, stitched_size)
-    # For Test
-    # left_transformed = cv2.line(left_transformed, (abs(int(left_top_point[0])), abs(int(left_top_point[1]))),
-    #                             (abs(int(left_down_point[0])), abs(int(left_down_point[1]))), (255, 0, 0), 10)
-    # cv2.imshow('1', left_transformed)
-    # cv2.imshow('2', right)
-    # cv2.waitKey()
     # 衔接处优化后的目标图像
     dst_img = optimize_seam(left_transformed, right, offset_x, offset_y, edge_width, stitch_type='left-right')
     return dst_img
@@ -209,9 +197,6 @@ def stitch_image_right_to_left(left, right):
     kps2, des2 = extract_feature(right)
     # 获取最优匹配
     matches = get_nice_matches(des1, des2)
-    # img_match = cv2.drawMatchesKnn(left, kps1, right, kps2, matches, None, flags=2)
-    # cv2.imshow('matched', img_match)
-    # cv2.waitKey(0)
     # 提取匹配点的位置坐标
     kps1_matched, kps2_matched = matches2points(kps1, kps2, matches)
     # 获取变换矩阵(★ 注意顺序！！！)
@@ -226,9 +211,6 @@ def stitch_image_right_to_left(left, right):
     stitched_size = (n_left + offset_x, m_left + offset_y)
     # 执行坐标变换，将right上的点投影到left的对应位置
     right_transformed = cv2.warpPerspective(right, matrix, stitched_size)
-    # cv2.imshow('1', right_transformed)
-    # cv2.imshow('2', left)
-    # cv2.waitKey()
     # 左侧边缘坐标
     left_point = np.dot(matrix, np.array([0, 0, 1]))
     left_point = left_point / left_point[-1]
