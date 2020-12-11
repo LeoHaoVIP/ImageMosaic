@@ -46,7 +46,7 @@ JUST CLONE THE REPOSITORY AND RUN IT!
 
 ![crop1](./doc_imgs_folder/crop1.PNG)
 ![crop2](./doc_imgs_folder/crop2.PNG)
-![crop2](./doc_imgs_folder/crop3.PNG)
+![crop3](./doc_imgs_folder/crop3.PNG)
 
 
 ## Dependency
