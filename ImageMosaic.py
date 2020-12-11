@@ -10,7 +10,7 @@ FOLDER_NAME = 'rotate-scale'
 IMAGE_SET_NAME = '1'
 # Adjustable ['SIFT', 'SURF','ORB']
 FEATURE_TYPE = 'SIFT'
-# Adjustable ['center', 'order','reverse']
+# Adjustable ['forward', 'center','backward']
 STITCH_TYPE = 'center'
 # Adjustable
 # 距离阈值，越接近于0，匹配程度越高，匹配数相应降低（★过小可能导致matrix为空）
@@ -244,13 +244,13 @@ if __name__ == '__main__':
     images = load_split_images()
     # 目标图像
     img_dst = None
-    # 中间图片位置（默认正序拼接）
+    # 中间图片位置（默认前向缝合）
     center_index = len(images) - 1
     if STITCH_TYPE == 'center':
         center_index = int(len(images) / 2)
-    elif STITCH_TYPE == 'order':
+    elif STITCH_TYPE == 'forward':
         center_index = len(images) - 1
-    elif STITCH_TYPE == 'reverse':
+    elif STITCH_TYPE == 'backward':
         center_index = 0
     for img_index in range(0, len(images)):
         print('----->>> Stitching image {0} of {1}_{2}'.format(img_index, FOLDER_NAME, IMAGE_SET_NAME))
