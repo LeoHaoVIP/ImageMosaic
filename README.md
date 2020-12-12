@@ -1,6 +1,6 @@
 # Image Mosaic Based on Local Feature and RANSAC
 
-This project is an implementation for image mosaic based on local feature descriptors and RANSAC, coded in Python language.
+This project is an implementation of image mosaic based on local feature descriptors and RANSAC, coded in Python language.
 
 Image mosaic is to make a panorama from given images.
 
