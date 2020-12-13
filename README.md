@@ -73,7 +73,8 @@ JUST CLONE THE REPOSITORY AND RUN IT!
 
 ## References
 * [1] Brown, M., Lowe, D.G. Automatic Panoramic Image Stitching using Invariant Features. Int J Comput Vision 74, 59¨C73 (2007). https://doi.org/10.1007/s11263-006-0002-3 
-* [2] David Kriegman. Homography Estimation. Computer Vision I. CSE 252A, Winter 2007    
+* [2] David Kriegman. Homography Estimation. Computer Vision I. CSE 252A, Winter 2007
+* [3] https://github.com/kushalvyas/Python-Multiple-Image-Stitching
 
 ## Author Info
 LeoHao (XMU-CS)
